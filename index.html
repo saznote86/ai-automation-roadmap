@@ -9,9 +9,105 @@
     <meta property="og:description" content="تطبيق تعليمي تفاعلي شامل لإتقان أتمتة الذكاء الاصطناعي (AI Automation)، وبناء أنظمة n8n، والـ RAG، وقنوات واتساب، وإغلاق أول عميل بيزنس." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg">
+    <style>
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        background: #020617;
+        color: #e2e8f0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        transition: opacity 320ms ease, visibility 320ms ease;
+      }
+
+      #initial-loader.is-ready {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .initial-loader__content {
+        width: min(360px, calc(100vw - 48px));
+        text-align: center;
+      }
+
+      .initial-loader__brand {
+        display: inline-grid;
+        width: 56px;
+        height: 56px;
+        margin-bottom: 20px;
+        place-items: center;
+        border-radius: 16px;
+        background: #f59e0b;
+        color: #0f172a;
+        font-size: 22px;
+        font-weight: 800;
+        box-shadow: 0 0 40px rgba(245, 158, 11, 0.2);
+      }
+
+      .initial-loader__title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .initial-loader__message {
+        min-height: 22px;
+        margin: 8px 0 20px;
+        color: #94a3b8;
+        font-size: 13px;
+      }
+
+      .initial-loader__track {
+        position: relative;
+        height: 6px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #1e293b;
+      }
+
+      .initial-loader__bar {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 42%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+        animation: initial-loader-progress 1.7s ease-in-out infinite;
+      }
+
+      .initial-loader__hint {
+        margin: 12px 0 0;
+        color: #64748b;
+        font-size: 11px;
+      }
+
+      @keyframes initial-loader-progress {
+        0% { transform: translateX(-115%); }
+        55% { transform: translateX(125%); }
+        100% { transform: translateX(285%); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .initial-loader__bar { animation: none; }
+        #initial-loader { transition: none; }
+      }
+    </style>
   </head>
   <body class="bg-slate-950 text-slate-100 antialiased selection:bg-amber-500/20 selection:text-amber-200">
+    <div id="initial-loader" role="status" aria-live="polite" aria-label="Chargement de l'application">
+      <div class="initial-loader__content">
+        <div class="initial-loader__brand" aria-hidden="true">AI</div>
+        <h1 class="initial-loader__title">AI Automation Roadmap</h1>
+        <p class="initial-loader__message">جاري تجهيز رحلتك في أتمتة الذكاء الاصطناعي...</p>
+        <div class="initial-loader__track" aria-hidden="true">
+          <div class="initial-loader__bar"></div>
+        </div>
+        <p class="initial-loader__hint">Chargement de l'expérience interactive...</p>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
