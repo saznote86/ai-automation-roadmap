@@ -1,0 +1,6 @@
+{
+  "name": "AI Automation Roadmap — من الصفر لحد أول عميل",
+  "description": "تطبيق تعليمي تفاعلي شامل لإتقان أتمتة الذكاء الاصطناعي (AI Automation)، وبناء أنظمة n8n، والـ RAG، وقنوات واتساب، وإغلاق أول عميل بيزنس.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
