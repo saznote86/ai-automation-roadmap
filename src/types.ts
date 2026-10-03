@@ -43,7 +43,7 @@ export interface Phase {
 export interface PortfolioProject {
   id: number;
   title: string;
-  difficulty: 'سهل' | 'متوسط' | 'متقدم';
+  difficulty: string;
   difficultyColor: string;
   summary: string;
   businessValue: string;

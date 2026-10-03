@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { ROADMAP_PHASES } from './data/roadmapData';
+import { getLocalizedRoadmap } from './data/localizedData';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { RoadmapTimeline } from './components/RoadmapTimeline';
@@ -21,8 +21,11 @@ import { LevelUpModal, GamificationToast, MILESTONES, MilestoneData } from './co
 import { DailyActionPlan } from './components/DailyActionPlan';
 import { TopProgressBar } from './components/TopProgressBar';
 import { PerformanceDashboard } from './components/PerformanceDashboard';
+import { useI18n } from './i18n';
 
 export default function App() {
+  const { language, t } = useI18n();
+  const roadmapPhases = getLocalizedRoadmap(language);
   const [activeTab, setActiveTab] = useState<string>('roadmap');
   const [currentPhaseId, setCurrentPhaseId] = useState<number>(0);
   
@@ -82,7 +85,7 @@ export default function App() {
     }
   }, [claimedMilestones]);
 
-  const totalTopicsCount = ROADMAP_PHASES.reduce((acc, p) => acc + p.topics.length, 0);
+  const totalTopicsCount = roadmapPhases.reduce((acc, p) => acc + p.topics.length, 0);
 
   // Check for Level Up trigger
   const checkMilestoneThresholds = (newCompletedTopicsCount: number) => {
@@ -130,8 +133,8 @@ export default function App() {
       if (isAdding) {
         next.add(projectId);
         setToastNotification({
-          title: 'مشروع جديد مكتمل! 🎯',
-          message: `أحسنت! أضفت مشروعاً عملياً جديداً لبورتفوليو الأتمتة (${next.size} من 10 مشاريع مكتملة).`
+          title: `🎯 ${t('projects')}`,
+          message: `${next.size}/10 ${t('projectsDone')}`
         });
         setTimeout(() => setToastNotification(null), 5000);
       } else {
@@ -143,29 +146,29 @@ export default function App() {
 
   // Determine Current Level
   const currentPercentage = Math.round((completedTopics.size / Math.max(1, totalTopicsCount)) * 100);
-  let currentLevelTitle = 'مستكشف مبتدئ';
+  let currentLevelTitle = language === 'fr' ? 'Explorateur débutant' : language === 'en' ? 'Beginner explorer' : 'مستكشف مبتدئ';
   let currentLevelBadgeIcon = '🌱';
   let currentMilestoneData = MILESTONES[25];
 
   if (currentPercentage >= 100) {
-    currentLevelTitle = 'مستشار أتمتة معتمد';
+    currentLevelTitle = language === 'fr' ? 'Consultant automation certifié' : language === 'en' ? 'Certified automation consultant' : 'مستشار أتمتة معتمد';
     currentLevelBadgeIcon = '🏆';
     currentMilestoneData = MILESTONES[100];
   } else if (currentPercentage >= 75) {
-    currentLevelTitle = 'سيد الـ RAG والمحادثات';
+    currentLevelTitle = language === 'fr' ? 'Expert RAG et conversations' : language === 'en' ? 'RAG and conversation master' : 'سيد الـ RAG والمحادثات';
     currentLevelBadgeIcon = '🧠';
     currentMilestoneData = MILESTONES[75];
   } else if (currentPercentage >= 50) {
-    currentLevelTitle = 'مهندس مسارات n8n';
+    currentLevelTitle = language === 'fr' ? 'Ingénieur de workflows n8n' : language === 'en' ? 'n8n workflow engineer' : 'مهندس مسارات n8n';
     currentLevelBadgeIcon = '⚡';
     currentMilestoneData = MILESTONES[50];
   } else if (currentPercentage >= 25) {
-    currentLevelTitle = 'مستكشف الويب والـ APIs';
+    currentLevelTitle = language === 'fr' ? 'Explorateur Web et APIs' : language === 'en' ? 'Web and API explorer' : 'مستكشف الويب والـ APIs';
     currentLevelBadgeIcon = '🌐';
     currentMilestoneData = MILESTONES[25];
   }
 
-  const currentPhase = ROADMAP_PHASES.find(p => p.id === currentPhaseId) || ROADMAP_PHASES[0];
+  const currentPhase = roadmapPhases.find(p => p.id === currentPhaseId) || roadmapPhases[0];
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -230,7 +233,7 @@ export default function App() {
           <div className="space-y-10">
             {/* Visual Roadmap Selector */}
             <RoadmapTimeline
-              phases={ROADMAP_PHASES}
+              phases={roadmapPhases}
               currentPhaseId={currentPhaseId}
               onSelectPhase={(id) => {
                 setCurrentPhaseId(id);

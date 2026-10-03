@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useI18n } from '../i18n';
 import { 
   Play, 
   RotateCcw, 
@@ -40,7 +41,8 @@ interface SimulatedNode {
   config?: Record<string, any>;
 }
 
-const PRESET_MESSAGES = [
+const PRESET_MESSAGES = {
+  ar: [
   {
     label: 'حجز موعد عيادة (نص)',
     text: 'أهلاً، عايز أحجز كشف باطنة بكرة بعد العصر لو سمحت. أنا أحمد علي.',
@@ -71,10 +73,27 @@ const PRESET_MESSAGES = [
     type: 'text',
     scenario: 'guardrail'
   }
-];
+  ],
+  fr: [
+    { label: 'Rendez-vous en clinique (texte)', text: 'Bonjour, je voudrais prendre rendez-vous demain après-midi. Je m’appelle Ahmed Ali.', type: 'text', scenario: 'booking' },
+    { label: 'Message vocal', text: '[Message vocal de 12 secondes] : « La pointure 43 des baskets blanches est-elle disponible ? Et la livraison à Maadi coûte combien ? »', type: 'voice', scenario: 'voice' },
+    { label: 'Photo d’un reçu (OCR)', text: '[Reçu Vodafone Cash] : « 1 200 EGP transférés pour confirmer le rendez-vous d’implant dentaire. »', type: 'image', scenario: 'ocr' },
+    { label: 'Réclamation urgente', text: 'La commande n°8912 a une semaine de retard ! Où est-elle et quand serai-je remboursé ?', type: 'text', scenario: 'complaint' },
+    { label: 'Test anti-hallucination', text: 'Pouvez-vous me donner le numéro personnel du médecin pour une question privée ?', type: 'text', scenario: 'guardrail' }
+  ],
+  en: [
+    { label: 'Clinic booking (text)', text: 'Hi, I would like to book an internal medicine appointment tomorrow afternoon. I’m Ahmed Ali.', type: 'text', scenario: 'booking' },
+    { label: 'Voice note', text: '[12-second voice note]: “Is size 43 of the white sneakers available? How much is delivery to Maadi?”', type: 'voice', scenario: 'voice' },
+    { label: 'Transfer receipt image (OCR)', text: '[Vodafone Cash receipt]: “EGP 1,200 transferred to confirm the dental implant appointment.”', type: 'image', scenario: 'ocr' },
+    { label: 'Urgent delivery complaint', text: 'Order #8912 is a week late! Where is it and what about my refund?', type: 'text', scenario: 'complaint' },
+    { label: 'Hallucination test (out of scope)', text: 'Can you give me the doctor’s personal number for a private matter?', type: 'text', scenario: 'guardrail' }
+  ]
+} as const;
 
 export const N8nSimulator: React.FC = () => {
-  const [customerMessage, setCustomerMessage] = useState(PRESET_MESSAGES[0].text);
+  const { language } = useI18n();
+  const presets = PRESET_MESSAGES[language];
+  const [customerMessage, setCustomerMessage] = useState<string>(presets[0].text);
   const [messageType, setMessageType] = useState<'text' | 'voice' | 'image'>('text');
   const [selectedChannel, setSelectedChannel] = useState<'whatsapp' | 'instagram' | 'telegram'>('whatsapp');
   const [selectedModel, setSelectedModel] = useState<'claude-3-5-sonnet' | 'gpt-4o' | 'gemini-2-5-flash'>('claude-3-5-sonnet');
@@ -575,7 +594,7 @@ export const N8nSimulator: React.FC = () => {
           اختر نوع وسيناريو رسالة العميل (نص، صوت Whisper، صورة OCR):
         </span>
         <div className="flex flex-wrap gap-2">
-          {PRESET_MESSAGES.map((preset, idx) => (
+              {presets.map((preset, idx) => (
             <button
               key={idx}
               onClick={() => {

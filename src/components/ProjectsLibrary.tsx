@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { PORTFOLIO_PROJECTS } from '../data/roadmapData';
+import { getLocalizedProjects } from '../data/localizedData';
+import { useI18n } from '../i18n';
 import { PortfolioProject } from '../types';
 import { 
   Briefcase, 
@@ -28,13 +29,15 @@ export const ProjectsLibrary: React.FC<ProjectsLibraryProps> = ({
   completedProjectIds,
   onToggleProject
 }) => {
+  const { language } = useI18n();
+  const portfolioProjects = getLocalizedProjects(language);
   const [filterDifficulty, setFilterDifficulty] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedProject, setSelectedProject] = useState<PortfolioProject>(PORTFOLIO_PROJECTS[0]);
+  const [selectedProject, setSelectedProject] = useState<PortfolioProject>(portfolioProjects[0]);
   const [copiedBlueprint, setCopiedBlueprint] = useState<boolean>(false);
   const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>({});
 
-  const filtered = PORTFOLIO_PROJECTS.filter(p => {
+  const filtered = portfolioProjects.filter(p => {
     const matchesDifficulty = filterDifficulty === 'all' || p.difficulty === filterDifficulty;
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           p.tools.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -47,15 +50,19 @@ export const ProjectsLibrary: React.FC<ProjectsLibraryProps> = ({
   };
 
   const getEstimatedPrice = (difficulty: string) => {
-    if (difficulty === 'سهل') return '$350 - $600 Setup + $150/ش';
-    if (difficulty === 'متوسط') return '$800 - $1,500 Setup + $300/ش';
-    return '$1,800 - $3,500 Setup + $600/ش';
+    const easy = language === 'fr' ? 'Facile' : language === 'en' ? 'Easy' : 'سهل';
+    const intermediate = language === 'fr' ? 'Intermédiaire' : language === 'en' ? 'Intermediate' : 'متوسط';
+    if (difficulty === easy) return language === 'ar' ? '$350 - $600 Setup + $150/ش' : '$350–$600 setup + $150/mo';
+    if (difficulty === intermediate) return language === 'ar' ? '$800 - $1,500 Setup + $300/ش' : '$800–$1,500 setup + $300/mo';
+    return language === 'ar' ? '$1,800 - $3,500 Setup + $600/ش' : '$1,800–$3,500 setup + $600/mo';
   };
 
   const getEstimatedBuildTime = (difficulty: string) => {
-    if (difficulty === 'سهل') return '2 - 4 ساعات عمل';
-    if (difficulty === 'متوسط') return '1 - 2 أيام عمل';
-    return '3 - 5 أيام عمل';
+    const easy = language === 'fr' ? 'Facile' : language === 'en' ? 'Easy' : 'سهل';
+    const intermediate = language === 'fr' ? 'Intermédiaire' : language === 'en' ? 'Intermediate' : 'متوسط';
+    if (difficulty === easy) return language === 'ar' ? '2 - 4 ساعات عمل' : language === 'fr' ? '2 à 4 heures' : '2–4 working hours';
+    if (difficulty === intermediate) return language === 'ar' ? '1 - 2 أيام عمل' : language === 'fr' ? '1 à 2 jours' : '1–2 working days';
+    return language === 'ar' ? '3 - 5 أيام عمل' : language === 'fr' ? '3 à 5 jours' : '3–5 working days';
   };
 
   const handleCopyBlueprint = () => {
@@ -107,7 +114,7 @@ export const ProjectsLibrary: React.FC<ProjectsLibraryProps> = ({
                 filterDifficulty === 'all' ? 'bg-amber-400 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
               }`}
             >
-              الكل ({PORTFOLIO_PROJECTS.length})
+              الكل ({portfolioProjects.length})
             </button>
             <button
               onClick={() => setFilterDifficulty('سهل')}

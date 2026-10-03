@@ -1,5 +1,6 @@
 import React from 'react';
-import { Layers, Sparkles, CheckCircle2, Calculator, BookOpen } from 'lucide-react';
+import { Layers, Sparkles, CheckCircle2, Calculator, BookOpen, Globe } from 'lucide-react';
+import { LANGUAGE_META, Language, useI18n } from '../i18n';
 
 interface HeaderProps {
   activeTab: string;
@@ -20,7 +21,9 @@ export const Header: React.FC<HeaderProps> = ({
   currentLevelTitle = 'مستكشف الويب',
   currentLevelBadgeIcon = '🌱'
 }) => {
+  const { language, setLanguage, t } = useI18n();
   const progressPercent = Math.round((completedTopicsCount / Math.max(1, totalTopicsCount)) * 100);
+  const languages: Language[] = ['ar', 'fr', 'en'];
 
   return (
     <header className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80">
@@ -105,6 +108,25 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Zone 3: Actions & Progress */}
         <div className="flex items-center gap-2.5">
+          {/* Language selector */}
+          <label className="relative flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs text-slate-200 transition-colors hover:border-amber-400/50 hover:text-white">
+            <Globe className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />
+            <span className="sr-only">{t('language')}</span>
+            <select
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as Language)}
+              aria-label={t('language')}
+              className="cursor-pointer appearance-none bg-transparent pr-4 font-semibold outline-none"
+            >
+              {languages.map((code) => (
+                <option key={code} value={code} className="bg-slate-900 text-white">
+                  {LANGUAGE_META[code].nativeLabel}
+                </option>
+              ))}
+            </select>
+            <span className="pointer-events-none absolute right-2 text-[10px] text-slate-400">⌄</span>
+          </label>
+
           {/* Gamification Level Badge Button */}
           <button
             onClick={onOpenLevelModal}
